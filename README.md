@@ -8,6 +8,6 @@ seo:
   name: Intro2CSS
 ---
 
-# Intro2CSS
+# Welcome to Intro2CSS Course
 
-Intro2CSS is a course website for intro to computational social science taught by Dr. Yongjun Zhang from Stony Brook University.
+Intro2CSS is a course website for intro to computational social science taught by Dr. Yongjun Zhang for New York University in Shanghai from July 15-19, 2022 Beijing Time. If you have any further questions, feel free to email Dr. Zhang (yongjun.zhang@stonybrook.edu or yz1981@nyu.edu)
