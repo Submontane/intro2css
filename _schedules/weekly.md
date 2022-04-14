@@ -20,11 +20,11 @@ timeline:
 schedule:
   - name: Friday
     events:
-      - name: Lecture - Recent development
+      - name: Lecture
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Guest Speaker
+      - name: Lecture
         start: 10:45 AM
         end: 11:45 PM
         location: Zoom
@@ -32,13 +32,13 @@ schedule:
         start: 12:00 PM
         end: 12:30 PM
         location: Zoom
-      - name: Lab - Basic R and Python
+      - name: Lab
         start: 2:00 PM
         end: 5:00 PM
         location: Zoom
   - name: Saturday
     events:
-      - name: Lecture - Text as Data
+      - name: Lecture
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
@@ -56,7 +56,7 @@ schedule:
         location: Zoom
   - name: Sunday
     events:
-      - name: Lecture - Text as Data
+      - name: Lecture
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
@@ -74,7 +74,7 @@ schedule:
         location: Zoom
   - name: Monday
     events:
-      - name: Lecture - Image as Data
+      - name: Lecture
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
@@ -92,7 +92,7 @@ schedule:
         location: Zoom
   - name: Tuesday
     events:
-      - name: Lecture - Image as Data
+      - name: Lecture
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
