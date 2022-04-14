@@ -47,7 +47,7 @@ schedule:
         start: 12:30 PM
         end: 2:00 PM
         location: 271 Soda
-  - name: Wednsday
+  - name: Wednesday
   - name: Thursday
   - name: Friday
     events:
