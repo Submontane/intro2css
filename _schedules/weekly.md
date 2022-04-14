@@ -33,7 +33,7 @@ schedule:
         start: 12:30 PM
         end: 2:00 PM
         location: 271 Soda
- - name: Saturday
+  - name: Saturday
     events:
       - name: Lecture
         start: 9:30 AM
@@ -47,7 +47,7 @@ schedule:
         start: 12:30 PM
         end: 2:00 PM
         location: 271 Soda
- - name: Sunday
+  - name: Sunday
     events:
       - name: Lecture
         start: 9:30 AM
