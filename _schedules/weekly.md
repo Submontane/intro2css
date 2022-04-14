@@ -50,7 +50,7 @@ schedule:
         start: 12:00 PM
         end: 12:30 PM
         location: Zoom
-      - name: Lab - We
+      - name: Lab
         start: 2:00 PM
         end: 5:00 PM
         location: Zoom
