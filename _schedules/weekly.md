@@ -22,7 +22,7 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 PM
+        end: 11:45 AM
         location: Zoom
       - name: Office Hours
         start: 12:00 PM
@@ -40,7 +40,7 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 PM
+        end: 11:45 AM
         location: Zoom
       - name: Office Hours
         start: 12:00 PM
@@ -58,7 +58,7 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 PM
+        end: 11:45 AM
         location: Zoom
       - name: Office Hours
         start: 12:00 PM
@@ -76,7 +76,7 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 PM
+        end: 11:45 AM
         location: Zoom
       - name: Office Hours
         start: 12:00 PM
@@ -94,7 +94,7 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 PM
+        end: 11:45 AM
         location: Zoom
       - name: Office Hours
         start: 12:00 PM
