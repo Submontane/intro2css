@@ -1,23 +1,27 @@
 ---
-title: Introduction to Java
+title: Intro to CSS
 ---
 
-Sep 28
-: [Java & Git](#)
+July 15
+: [CSS Basics](#)
   : [1.1](#)
+: **Section**{: .label .label-purple }[Recent development, opportunities, and challenges](#)
+: **Lab**{: .label .label-purple } [R or Python basics](#)
 
-Sep 29
-: **Section**{: .label .label-purple }[Intro to Java](#)
+July 16
+: [Text as Data](#)
+: **Section**{: .label .label-purple }[Text as Data](#)
   : [Solution](#)
 
-Sep 30
-: [Variables & Objects](#)
+July 17
+: [Text as Data](#)
   : [1.2](#), [2.1](#)
 
-Oct 1
-: **Lab**{: .label .label-purple } [Intro to Java](#)
+July 18
+: [Image as Data](#)
+: **Lab**{: .label .label-purple } [Image analysis](#)
 
-Oct 2
-: [Tracing, IntLists, & Recursion](#)
+July 19
+: [Image as Data](#)
   : [2.1](#)
 : **HW 1 due**{: .label .label-red }
