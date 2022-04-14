@@ -13,9 +13,9 @@
 # you will see them accessed via {{ site.title }}, {{ site.github_repo }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: Introduction to Computational Social Science
-tagline: A Jekyll template for course websites
-description: A modern, highly customizable, responsive Jekyll template for course websites
+title: Intro to CSS
+tagline: intro2css
+description: The course website for intro2css
 author: Yongjun Zhang, Ph.D.
 baseurl: '/intro2css' # the subpath of your site, e.g. /blog
 url: 'https://yongjunzhang.com' # the base hostname & protocol for your site, e.g. http://example.com
