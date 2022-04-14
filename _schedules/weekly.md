@@ -17,76 +17,95 @@ timeline:
   - '4:00 PM'
   - '4:30 PM'
   - '5:00 PM'
-  - '5:30 PM'
 schedule:
   - name: Friday
     events:
-      - name: Lecture
+      - name: Lecture - Recent development
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Section
-        start: 11:30 AM
+      - name: Guest Speaker
+        start: 10:45 AM
+        end: 11:45 PM
+        location: Zoom
+      - name: Research Dating
+        start: 12:00 PM
         end: 12:30 PM
         location: Zoom
-      - name: Office Hours
-        start: 12:30 PM
-        end: 2:00 PM
+      - name: Lab - Basic R and Python
+        start: 2:00 PM
+        end: 5:00 PM
         location: Zoom
   - name: Saturday
     events:
-      - name: Lecture
+      - name: Lecture - Text as Data
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Section
-        start: 11:30 AM
-        end: 12:30 PM
+      - name: Guest Speaker
+        start: 10:45 AM
+        end: 11:45 PM
         location: Zoom
       - name: Office Hours
-        start: 12:30 PM
-        end: 2:00 PM
+        start: 12:00 PM
+        end: 12:30 PM
+        location: Zoom
+      - name: Lab - We
+        start: 2:00 PM
+        end: 5:00 PM
         location: Zoom
   - name: Sunday
     events:
-      - name: Lecture
+      - name: Lecture - Text as Data
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Section
-        start: 11:30 AM
-        end: 12:30 PM
+      - name: Guest Speaker
+        start: 10:45 AM
+        end: 11:45 PM
         location: Zoom
       - name: Office Hours
-        start: 12:30 PM
-        end: 2:00 PM
+        start: 12:00 PM
+        end: 12:30 PM
+        location: Zoom
+      - name: Lab
+        start: 2:00 PM
+        end: 5:00 PM
         location: Zoom
   - name: Monday
     events:
-      - name: Lecture
+      - name: Lecture - Image as Data
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Section
-        start: 11:30 AM
-        end: 12:30 PM
+      - name: Guest Speaker
+        start: 10:45 AM
+        end: 11:45 PM
         location: Zoom
       - name: Office Hours
-        start: 12:30 PM
-        end: 2:00 PM
+        start: 12:00 PM
+        end: 12:30 PM
+        location: Zoom
+      - name: Lab
+        start: 2:00 PM
+        end: 5:00 PM
         location: Zoom
   - name: Tuesday
     events:
-      - name: Lecture
+      - name: Lecture - Image as Data
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Section
-        start: 11:30 AM
-        end: 12:30 PM
+      - name: Guest Speaker
+        start: 10:45 AM
+        end: 11:45 PM
         location: Zoom
       - name: Office Hours
-        start: 12:30 PM
-        end: 2:00 PM
+        start: 12:00 PM
+        end: 12:30 PM
+        location: Zoom
+      - name: Research Day
+        start: 2:00 PM
+        end: 5:00 PM
         location: Zoom
 ---
