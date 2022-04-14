@@ -24,11 +24,11 @@ schedule:
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Lecture
+      - name: Guest Speaker
         start: 10:45 AM
         end: 11:45 PM
         location: Zoom
-      - name: Research Dating
+      - name: Office Hours
         start: 12:00 PM
         end: 12:30 PM
         location: Zoom
@@ -104,7 +104,7 @@ schedule:
         start: 12:00 PM
         end: 12:30 PM
         location: Zoom
-      - name: Research Day
+      - name: Lab
         start: 2:00 PM
         end: 5:00 PM
         location: Zoom
