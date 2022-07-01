@@ -73,7 +73,7 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 AM
+        end: 11:30 AM
         location: Zoom
       - name: Lecture
         start: 11:45 PM
@@ -95,10 +95,10 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 AM
+        end: 11:30 AM
         location: Zoom
       - name: Lecture
-        start: 11:30 PM
+        start: 11:45 PM
         end: 12:30 PM
         location: Zoom
       - name: Lab
