@@ -19,7 +19,6 @@ timeline:
   - '6:00 PM'
   - '7:00 PM'
   - '8:00 PM'
-  - '8:30 PM'
   - '9:00 PM'
   - '10:00 PM'
 schedule:
@@ -42,8 +41,8 @@ schedule:
         end: 5:00 PM
         location: Zoom
       - name: Office Hours
-        start: 8:30 PM
-        end: 10:00 PM
+        start: 8:00 PM
+        end: 9:00 PM
         location: Zoom
   - name: Saturday
     events:
@@ -64,7 +63,7 @@ schedule:
         end: 5:00 PM
         location: Zoom
       - name: Office Hours
-        start: 8:30 PM
+        start: 8:00 PM
         end: 10:00 PM
         location: Zoom
   - name: Sunday
@@ -86,8 +85,8 @@ schedule:
         end: 5:00 PM
         location: Zoom
       - name: Office Hours
-        start: 8:30 PM
-        end: 10:00 PM
+        start: 8:00 PM
+        end: 9:00 PM
         location: Zoom
   - name: Monday
     events:
@@ -108,8 +107,8 @@ schedule:
         end: 5:00 PM
         location: Zoom
       - name: Office Hours
-        start: 8:30 PM
-        end: 10:00 PM
+        start: 8:00 PM
+        end: 9:00 PM
         location: Zoom
   - name: Tuesday
     events:
@@ -130,7 +129,7 @@ schedule:
         end: 5:00 PM
         location: Zoom
       - name: Office Hours
-        start: 8:30 PM
-        end: 10:00 PM
+        start: 8:00 PM
+        end: 9:00 PM
         location: Zoom
 ---
