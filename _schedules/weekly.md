@@ -64,7 +64,7 @@ schedule:
         location: Zoom
       - name: Office Hours
         start: 8:00 PM
-        end: 10:00 PM
+        end: 9:00 PM
         location: Zoom
   - name: Sunday
     events:
