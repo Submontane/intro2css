@@ -16,6 +16,10 @@ timeline:
   - '4:00 PM'
   - '4:30 PM'
   - '5:00 PM'
+  - '6:00 PM'
+  - '7:00 PM'
+  - '8:30 PM'
+  - '10:00 PM'
 schedule:
   - name: Friday
     events:
@@ -23,17 +27,21 @@ schedule:
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Guest Speaker
+      - name: Lecture
         start: 10:45 AM
-        end: 11:45 AM
+        end: 11:30 AM
         location: Zoom
-      - name: Office Hours
-        start: 12:00 PM
+      - name: Lecture
+        start: 11:45 PM
         end: 12:30 PM
         location: Zoom
       - name: Lab
         start: 2:00 PM
         end: 5:00 PM
+        location: Zoom
+      - name: Office Hours
+        start: 8:30 PM
+        end: 10:00 PM
         location: Zoom
   - name: Saturday
     events:
@@ -43,15 +51,19 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 AM
+        end: 11:30 AM
         location: Zoom
-      - name: Office Hours
-        start: 12:00 PM
+      - name: Lecture
+        start: 11:45 PM
         end: 12:30 PM
         location: Zoom
       - name: Lab
         start: 2:00 PM
         end: 5:00 PM
+        location: Zoom
+      - name: Office Hours
+        start: 8:30 PM
+        end: 10:00 PM
         location: Zoom
   - name: Sunday
     events:
@@ -63,13 +75,17 @@ schedule:
         start: 10:45 AM
         end: 11:45 AM
         location: Zoom
-      - name: Office Hours
-        start: 12:00 PM
+      - name: Lecture
+        start: 11:45 PM
         end: 12:30 PM
         location: Zoom
       - name: Lab
         start: 2:00 PM
         end: 5:00 PM
+        location: Zoom
+      - name: Office Hours
+        start: 8:30 PM
+        end: 10:00 PM
         location: Zoom
   - name: Monday
     events:
@@ -81,13 +97,17 @@ schedule:
         start: 10:45 AM
         end: 11:45 AM
         location: Zoom
-      - name: Office Hours
-        start: 12:00 PM
+      - name: Lecture
+        start: 11:30 PM
         end: 12:30 PM
         location: Zoom
       - name: Lab
         start: 2:00 PM
         end: 5:00 PM
+        location: Zoom
+      - name: Office Hours
+        start: 8:30 PM
+        end: 10:00 PM
         location: Zoom
   - name: Tuesday
     events:
@@ -97,14 +117,18 @@ schedule:
         location: Zoom
       - name: Guest Speaker
         start: 10:45 AM
-        end: 11:45 AM
+        end: 11:30 AM
         location: Zoom
-      - name: Office Hours
-        start: 12:00 PM
+      - name: Lecture
+        start: 11:45 PM
         end: 12:30 PM
         location: Zoom
       - name: Lab
         start: 2:00 PM
         end: 5:00 PM
+        location: Zoom
+      - name: Office Hours
+        start: 8:30 PM
+        end: 10:00 PM
         location: Zoom
 ---
