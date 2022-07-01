@@ -14,9 +14,9 @@ July 15
 July 16
 : [Text as Data](#)
 : **Section**{: .label .label-purple }[Data Collection](#)
-  : [2.1 Webscraping](#), [2.2 API](#)
+  : [2.1](#)
 : **Section**{: .label .label-purple }[NLP in Social Sciences](#)
-  : [2.3 Topic Modeling](#)
+  : [2.2](#)
 : **Lab**{: .label .label-purple } [Web scraping, text analysis](#)
 : **Code Challenge 2 due**{: .label .label-red }
 
@@ -40,7 +40,7 @@ July 18
 July 19
 : [Image as Data](#)
 : **Section**{: .label .label-purple }[Using Deep Learning Methods to Analyze Imagery Data](#)
-  : [5.1 Pytorch](#), [5.2 Tensorflow](#),
+  : [5.1](#)
 : **Lab**{: .label .label-purple } [CNN, ViT, Swin transformers](#)
 : **Code Challenge 4 due**{: .label .label-red }
 
