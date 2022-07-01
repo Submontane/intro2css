@@ -34,7 +34,7 @@ schedule:
         end: 11:30 AM
         location: Zoom
       - name: Lecture
-        start: 11:45 PM
+        start: 11:45 AM
         end: 12:30 PM
         location: Zoom
       - name: Lab
@@ -56,7 +56,7 @@ schedule:
         end: 11:30 AM
         location: Zoom
       - name: Lecture
-        start: 11:45 PM
+        start: 11:45 AM
         end: 12:30 PM
         location: Zoom
       - name: Lab
@@ -78,7 +78,7 @@ schedule:
         end: 11:30 AM
         location: Zoom
       - name: Lecture
-        start: 11:45 PM
+        start: 11:45 AM
         end: 12:30 PM
         location: Zoom
       - name: Lab
@@ -100,7 +100,7 @@ schedule:
         end: 11:30 AM
         location: Zoom
       - name: Lecture
-        start: 11:45 PM
+        start: 11:45 AM
         end: 12:30 PM
         location: Zoom
       - name: Lab
@@ -122,7 +122,7 @@ schedule:
         end: 11:30 AM
         location: Zoom
       - name: Lecture
-        start: 11:45 PM
+        start: 11:45 AM
         end: 12:30 PM
         location: Zoom
       - name: Lab
