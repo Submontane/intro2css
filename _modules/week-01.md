@@ -24,7 +24,7 @@ July 17
 : [Text as Data](#)
 : **Section**{: .label .label-purple }[Word Embeddings](#)
   : [3.1](#), [3.2](#)
-  : **Section**{: .label .label-purple }[Sentiment Analysis](#)
+: **Section**{: .label .label-purple }[Sentiment Analysis](#)
   : [3.3](#)
 : **Lab**{: .label .label-purple } [Word vectors, bert model](#)
 : **Code Challenge 3 due**{: .label .label-red }
