@@ -39,3 +39,7 @@ This is the course website for intro2css. The aim of this course is to show you 
 - [CS231n: Deep Learning for Computer Vision](http://cs231n.stanford.edu/)
 
 - [Supervised Machine Learning: Regression and Classification](https://www.coursera.org/learn/machine-learning)
+
+- [Summer Institute of Computational Social Science](sicss.io)
+
+- [RStudio Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
