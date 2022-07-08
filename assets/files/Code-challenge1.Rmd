@@ -1,0 +1,300 @@
+---
+title: "Code Challenge in ML: Replicating Baby Names Gender Prediction"
+author: "Yongjun Zhang, Ph.D."
+institute: "Department of Sociology and IACS, Stony Brook Unversity"
+date: ""
+output: pdf_document
+--- 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Data Preparation
+
+> You can download ssa baby names via here <https://catalog.data.gov/dataset/baby-names-from-social-security-card-applications-national-data>
+
+> I have also used the following codes to preprocess the data. I have generated aggregated name counts by gender and then define our target outcome as "female if over 50 of women use that name." I have also created four variables: first letter, first two letters, last letter, and laster two letters. You can directly use the RData file, <https://yongjunzhang.com/files/ssa_baby_names.RData>. 
+
+```{r}
+require(pacman)
+p_load(tidyverse,glue)
+
+files <- list.files(path = "./names/",pattern = ".txt",full.names = TRUE)
+files
+
+# let us say we want to define a read_us_baby function
+readSsaBabyNames <- function(file,...){
+  require(tidyverse)
+  data <- read_csv(file,col_names = FALSE,show_col_types = FALSE) %>% 
+    mutate(year=str_replace_all(file,"[^0-9]",""))
+  colnames(data) <- c("names","sex","count","year")
+  return(data)
+}
+
+dat_year <- map_dfr(files, readSsaBabyNames)
+
+# we only use names after 1970 and used by at least 10
+dat_all <- dat_year %>%
+  filter(year>1970) %>% 
+  group_by(names,sex) %>% 
+  summarise(count=sum(count)) %>% 
+  # we only keep names used by at least 10 
+  filter(count>10) %>% 
+  pivot_wider(names_from = "sex",values_from="count") %>% 
+  replace_na(list(F=0,M=0)) %>% 
+  mutate(female=(F/(F+M)>.5)*1) %>% 
+  mutate(flt1= str_extract(names,"^.")%>% tolower,
+         flt2= str_extract(names,"^.{2}") %>% tolower,
+         llt1= str_extract(names,".$")%>% tolower,
+         llt2= str_extract(names,".{2}$")%>% tolower
+         )
+save(dat_year,dat_all,file="./ssa_baby_names.RData")
+```
+
+### Split our data into train and test data
+
+Before we further split our data, let us take a look at data first. Since the code challenge asks us to select top 5 most frequent features, we take a look and see which letters are most frequent in the database.
+
+```{r}
+
+top_letters <- dat_all %>% 
+  group_by(flt1) %>% 
+  summarise(fl1=n()) %>% 
+  top_n(n=5) %>% 
+  bind_cols(
+    dat_all %>% 
+      group_by(flt2) %>% 
+      summarise(fl2=n()) %>% 
+      top_n(n=5)
+  ) %>% 
+  bind_cols(
+    dat_all %>% 
+      group_by(llt1) %>% 
+      summarise(ll1=n()) %>% 
+      top_n(n=5)
+  ) %>% 
+  bind_cols(
+    dat_all %>% 
+      group_by(llt2) %>% 
+      summarise(ll2=n()) %>% 
+      top_n(n=5)
+  )
+
+knitr::kable(top_letters)
+
+```
+
+### Let us create these features
+
+including, flt1.a, flt1.j, flt1.k, flt1.m, flt1.s,flt2.da, flt2.ja, flt2.ka,flt2.ma, flt2.sh,
+ll1.a, ll1.e, ll1.h, ll1.i, ll1.n, etc..
+
+
+```{r}
+library(caret)
+#create the full datasets with dummies
+top_features <- c(paste0("flt1",c("a","j","k","m","s")),
+                  paste0("flt2",c("da","ja","ka","ma","sh")),
+                  paste0("llt1",c("a","e","h","i","n")),
+                  paste0("llt2",c("ah","an","ia","na","on"))
+                  )
+fllt_d=predict(dummyVars(~llt1+llt2+flt1+flt2,data=dat_all),newdata=dat_all)%>%as.data.frame()
+
+df=dat_all %>% 
+  ungroup %>% 
+  select(names,female) %>% 
+  filter(!is.na(female)) %>% 
+  mutate(female=ifelse(female==1,"Y","N") %>% as.factor()) %>% 
+  bind_cols(fllt_d %>% 
+              select(all_of(top_features)))
+```
+
+Let us finally split our data into train and test
+
+```{r}
+inTrain <- createDataPartition(
+  y = df$female,
+  ## the outcome data are needed
+  p = .75,
+  ## The percentage of data in the
+  ## training set
+  list = FALSE
+)
+
+train <- df[ inTrain,]
+test  <- df[-inTrain,]
+
+nrow(train)
+#> [1] 157
+nrow(test)
+library(gdata)
+keep(dat_all,df,train,test,sure=TRUE)
+
+```
+
+### Let us train a nb model to predict gender
+
+You need naivebayes package to be installed, here is the documentation:
+<https://cran.r-project.org/web/packages/naivebayes/naivebayes.pdf>
+
+
+```{r}
+# K folds cross validation
+# try parallel computing
+library(doParallel)
+library(naivebayes)
+cl <- makePSOCKcluster(3)
+registerDoParallel(cl)
+
+# Define tuning grid 
+grid_nb <- expand.grid(usekernel = c(TRUE, FALSE),
+                         laplace = c(0, 0.5, 1), 
+                         adjust = c(0.75, 1, 1.25, 1.5))
+
+train_control <- caret::trainControl(
+  method = "cv",
+  number = 3,
+  classProbs=T,savePredictions = T,
+  verboseIter = FALSE, 
+  allowParallel = TRUE 
+)
+
+nb_base <- caret::train(
+  female~., 
+  data=train %>%  dplyr::select(-c(names)),
+  trControl = train_control,
+  tuneGrid = grid_nb,
+  method = "naive_bayes",
+  verbose = TRUE
+)
+
+stopCluster(cl)
+
+save(nb_base,file="./nb_base.RData")
+
+```
+
+### Let us check model performance, get the comfusion matrix firrst
+
+```{r}
+#load("./nb_base.RData")
+# check cf matrix
+nb_base
+confusionMatrix(nb_base)
+# PLOT ROC CURVE
+library(MLeval)
+## run MLeval
+res <- evalm(nb_base)
+## get ROC
+res$roc
+```
+
+### Test model performance on test set
+
+```{r}
+# predict test names
+test_df <- test %>% dplyr::select(-c(names,female))
+test_pred <- predict(nb_base$finalModel,newdata=test_df) %>% as.data.frame()
+colnames(test_pred) <- "nb_female"
+# check confusion matrix
+confusionMatrix(test_pred$nb_female,test$female)
+```
+
+### Let us try penalized logit models
+we will use glmnet
+-combination of lasso and ridge regression
+-Can fit a mix of the two models
+-alpha [0, 1]: pure lasso to pure ridge
+-lambda (0, infinity): size of the penalty
+
+```{r}
+# K folds cross validation
+# try parallel computing
+library(glmnet)
+cl <- makePSOCKcluster(3)
+registerDoParallel(cl)
+
+# Define tuning grid 
+grid_plr <- expand.grid( alpha = c(0,1),
+                         lambda = c(1e-4, 1e-2, 1))
+
+train_control <- caret::trainControl(
+  method = "cv",
+  number = 3,
+  classProbs=T,savePredictions = T,
+  verboseIter = FALSE, 
+  allowParallel = TRUE 
+)
+
+plr_base <- caret::train(
+  female~., 
+  data=train %>%dplyr::select(-c(names)),
+  trControl = train_control,
+  tuneGrid = grid_plr,
+  method = "glmnet",
+  verbose = TRUE
+)
+
+stopCluster(cl)
+save(plr_base,file="./plr_base.RData")
+# check cf matrix
+plr_base
+confusionMatrix(plr_base)
+```
+
+
+# Let us try random forest
+
+Random Forest
+
+-method = 'ranger'
+-Type: Classification, Regression
+
+Tuning parameters:
+
+-mtry (#Randomly Selected Predictors)
+-splitrule (Splitting Rule)
+-min.node.size (Minimal Node Size)
+-Required packages: e1071, ranger, dplyr
+
+here is the documentation: <https://cran.r-project.org/web/packages/ranger/ranger.pdf>
+
+```{r}
+# K folds cross validation
+# try parallel computing
+require(pacman)
+p_load(ranger,e1071)
+cl <- makePSOCKcluster(3)
+registerDoParallel(cl)
+
+# Define tuning grid 
+grid_rf <- expand.grid(splitrule= c("gini", "extratrees","hellinger"),
+                      mtry = c(1,2,4,10),
+                      min.node.size=c(1))
+
+train_control <- caret::trainControl(
+  method = "cv",
+  number = 3,
+  classProbs=T,savePredictions = T,
+  verboseIter = FALSE, 
+  allowParallel = TRUE 
+)
+
+rf_base <- caret::train(
+  female~., 
+  data=train %>%dplyr::select(-c(names)),
+  trControl = train_control,
+  tuneGrid = grid_rf,
+  method ='ranger',
+  verbose = TRUE
+)
+
+stopCluster(cl)
+save(rf_base,file="./rf_base.RData")
+# check cf matrix
+rf_base
+confusionMatrix(rf_base)
+```
+
+
