@@ -1,0 +1,228 @@
+---
+title: "Word Embeddings"
+author: "Yongjun Zhang"
+date: ""
+output:
+  rmdformats::readthedown:
+    highlight: pygments
+--- = =
+---
+
+```{=html}
+<style type="text/css">
+p{ /* Normal  */
+   font-size: 18px;
+}
+body{ /* Normal  */
+   font-size: 18px;
+}
+td {  /* Table  */
+   font-size: 14px;
+}
+h1 { /* Header 1 */
+ font-size: 32px;
+}
+h2 { /* Header 2 */
+ font-size: 26px;
+}
+h3 { /* Header 3 */
+ font-size: 22px;
+}
+code.r{ /* Code block */
+  font-size: 14px;
+}
+pre { /* Code block */
+  font-size: 14px
+}
+</style>
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Learning Objects
+
+The primary goals of this tutorial includes:
+
+> Introducing word2vec in R
+
+> Introducing Glove in R
+
+> Introducing doc2vec in R
+
+
+## We need to load some packages for use
+
+```{r}
+pacman::p_load(tidyverse,glue,doc2vec,word2vec,text2vec)
+```
+
+# Data Prep
+
+## Load sample data on earnings call transcripts
+
+R tidyverse package provides a series of useful data wrangling tools. You can 
+check it here <https://www.tidyverse.org/>. 
+
+We use earning call transcripts as an illustrative example. We mentioned that the QJE paper on firm level political risk is computed based on earnings call data. You can get their final dataset via <https://www.firmlevelrisk.com/>
+
+We use some of these earnings call excerpts. It has already been parsed and it is structured by speaker-session. You can get the sample data via <https://yongjunzhang.com/intro2css/assets/files/ect_sample.RData>
+
+```{r}
+# load data
+# load(url("https://yongjunzhang.com/files/css/ect_sample.RData"))
+# you can also download the data and then load it
+load("ect_sample.RData")
+ect_sample <- ect_sample %>% 
+  filter(!is.na(tic))
+```
+
+## Let us do some data processing
+```{r}
+ect_docs <- ect_sample %>%
+  # create some variables
+  mutate(speakerName=str_replace_all(speakerName,"_|\\[|\\]|\\?|\\(|\\)"," ") %>%
+           str_trim %>%
+           str_squish,
+         firstName = str_extract(speakerName,"^.*? ") %>% str_trim,
+         lastName = str_extract(speakerName," .*?$") %>% 
+           str_trim %>% 
+           str_replace("^.* ",""),
+         uid = row_number(),
+         CEO=str_detect(tolower(speakerTitle),"ceo|chief executive officer")*1,
+         CFO=str_detect(tolower(speakerTitle),"cfo|chief financial officer")*1,
+         PRESIDENT=str_detect(tolower(speakerTitle),"president|chairman|chairwoman")*1-str_detect(tolower(speakerTitle),"vice president")*1) %>% 
+  filter(speakerName!="") %>% 
+  # collapse all turns into one by each speaker
+  group_by(tic,CEO, CFO, PRESIDENT,speakerName,firstName,lastName) %>% 
+  summarise(text=paste0(text,collapse = " ") %>% 
+              tolower %>% 
+              #str_replace_all("[^:alnum:]"," ") %>% 
+              str_trim %>% 
+              str_squish) %>% 
+  ungroup %>% 
+  mutate(doc_id=row_number())
+
+```
+# word2vec
+
+Check here for more details: <https://cran.r-project.org/web/packages/word2vec/readme/README.html>
+
+> word2vec is based on the paper [Distributed Representations of Words and Phrases and their Compositionality by Mikolov et al.](https://arxiv.org/pdf/1310.4546.pdf)
+
+> This R package is an Rcpp wrapper around <https://github.com/maxoodf/word2vec>
+
+> The package allows one to train word embeddings using multiple threads on character data or data in a text file
+use the embeddings to find relations between words
+
+Build a model
+
+```{r}
+set.seed(2022)
+model <- word2vec(x = ect_docs$text, type = "cbow", dim = 15, iter = 20)
+word2vec_embedding <- as.matrix(model)
+```
+
+Get the closest words for income
+
+```{r}
+income<- predict(model, c("income"), type = "nearest", top_n = 5)
+income
+```
+
+# glove model
+
+Glove refers to Global vectors for word representation developed by Pennington et al. Check here for more details: <http://nlp.stanford.edu/projects/glove/>. We use the R package text2vec to fit our model. Check here for more details: <https://cran.r-project.org/web/packages/text2vec/vignettes/glove.html>.
+
+The GloVe algorithm consists of following steps:
+
+> Collect word co-occurence statistics in a form of word co-ocurrence matrix X. Each element Xij of such matrix represents how often word i appears in context of word j. Usually we scan our corpus in the following manner: for each term we look for context terms within some area defined by a window_size before the term and a window_size after the term. Also we give less weight for more distant words, usually using this formula: decay=1/offset
+
+> Define soft constraints for each word pair: $wTiwj+bi+bj=log(Xij)$ Here wi - vector for the main word, wj - vector for the context word, bi, bj are scalar biases for the main and context words.
+
+>Define a cost function J=∑i=1V∑j=1Vf(Xij)(wTiwj+bi+bj−logXij)2
+
+In the next step we will create a vocabulary, a set of words for which we want to learn word vectors. 
+
+```{r}
+# Create iterator over tokens
+tokens <- space_tokenizer(ect_docs$text)
+# Create vocabulary. Terms will be unigrams (simple words).
+it = itoken(tokens, progressbar = FALSE)
+(vocab <- create_vocabulary(it))
+```
+
+These words should not be too uncommon. Fot example we cannot calculate a meaningful word vector for a word which we saw only once in the entire corpus. Here we will take only words which appear at least five times. text2vec provides additional options to filter vocabulary (see ?prune_vocabulary).
+
+```{r}
+vocab <- prune_vocabulary(vocab, term_count_min = 5L)
+```
+
+Now we are ready to construct term-co-occurence matrix (TCM).
+
+```{r}
+# Use our filtered vocabulary
+vectorizer <- vocab_vectorizer(vocab)
+# use window of 5 for context words
+tcm <- create_tcm(it, vectorizer, skip_grams_window = 5L)
+```
+
+Now we have a TCM matrix and can factorize it via the GloVe algorithm.
+text2vec uses a parallel stochastic gradient descent algorithm. By default it will use all cores on your machine, but you can specify the number of cores if you wish.
+
+Let’s fit our model. Check here fore parameters: <https://search.r-project.org/CRAN/refmans/rsparse/html/GloVe.html>
+
+```{r}
+glove = GlobalVectors$new(rank = 300, x_max = 10)
+wv_main = glove$fit_transform(tcm, n_iter = 10, convergence_tol = 0.01, n_threads = 8)
+```
+
+Get word vectors
+
+```{r}
+wv_context = glove$components
+word_vectors = wv_main + t(wv_context)
+
+```
+
+We can find the closest words associated with "income":
+
+```{r}
+income <- word_vectors["income", , drop = FALSE]
+cos_sim = sim2(x = word_vectors, y = income, method = "cosine", norm = "l2")
+head(sort(cos_sim[,1], decreasing = TRUE), 10)
+```
+
+# doc2vec
+
+> Check here for mode details on doc2vec tutorial: <https://github.com/bnosac/doc2vec> This repository contains an R package allowing to build Paragraph Vector models also known as doc2vec models. You can train the distributed memory ('PV-DM') and the distributed bag of words ('PV-DBOW') models. 
+
+> doc2vec is based on the paper Distributed Representations of Sentences and Documents Mikolov et al. while top2vec is based on the paper Distributed Representations of Topics Angelov
+
+> The doc2vec part is an Rcpp wrapper around https://github.com/hiyijian/doc2vec
+The package allows one to train paragraph embeddings (also known as document embeddings) on character data or data in a text file use the embeddings to find similar documents, paragraphs, sentences or words cluster document embeddings using top2vec 
+
+When you train your doc2vec model, 
+- Make sure it has columns doc_id and text
+- Make sure that each text has less than 1000 words (a word is considered separated by a single space)
+- Make sure that each text does not contain newline symbols
+
+```{r}
+## Low-dimensional model using DM
+model <- paragraph2vec(x = ect_docs, type = "PV-DM", dim = 300, iter = 20,  
+                       min_count = 2, lr = 0.05, threads = 100)
+str(model)
+# get embedding
+
+doc2vec_embedding <- as.matrix(model, which = "docs")
+
+# Get the embedding of specific documents.
+nn <- predict(model, newdata = c("198", "285"), type = "nearest", which = "doc2doc",  top_n = 5)
+nn
+
+```
+
+# Estimating word vectors is not the end of the analysis. It should be the starting point of your analysis. Check the paper on quantifying gender and occupation bias over 100 years for more details.
+
+### THE END...
