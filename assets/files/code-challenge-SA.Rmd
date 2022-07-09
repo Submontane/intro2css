@@ -1,0 +1,121 @@
+---
+title: "Code Challenge: Sentiment Analysis"
+author: "Yongjun Zhang"
+date: ""
+output:
+  rmdformats::readthedown:
+    highlight: pygments
+--- = =
+---
+
+```{=html}
+<style type="text/css">
+p{ /* Normal  */
+   font-size: 18px;
+}
+body{ /* Normal  */
+   font-size: 18px;
+}
+td {  /* Table  */
+   font-size: 14px;
+}
+h1 { /* Header 1 */
+ font-size: 32px;
+}
+h2 { /* Header 2 */
+ font-size: 26px;
+}
+h3 { /* Header 3 */
+ font-size: 22px;
+}
+code.r{ /* Code block */
+  font-size: 14px;
+}
+pre { /* Code block */
+  font-size: 14px
+}
+</style>
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Instruction
+
+> You are required to conduct some sentiment analysis for IMDB movie reviews
+
+> The training dataset can be loaded using read_csv(url("https://yongjunzhang/files/css/imdb_sample.csv")). 
+
+> It is a random sample of IMDB movie review data. It has 1500 negative reviews and 1500 positive reviews.
+
+> You are required to compute sentiment scores using one of lexicon-based methods and one of conventional ML methods.
+
+> You need to turn in your rmarkdown file and the associated pdf or html.
+
+> Some clues: You can use one of these r packages we mentioned in our lecture and just do mutate to create a sentiment score. For ML method, you can do caret style training or use quanteda package.
+
+> You have two weeks to complete this challenge.
+
+> Note that you should also work on your final research project as well.
+
+
+
+```{r}
+require(pacman)
+p_load(tidyverse,glue,sentimentr,syuzhet,quanteda,quanteda.textmodels,caret)
+```
+
+```{r}
+data <- read_csv(url("https://yongjunzhang.com/files/css/imdb_sample.csv"))
+```
+
+```{r}
+
+corp_movies <- corpus(data)
+summary(corp_movies, 10)
+
+set.seed(300)
+id_train <- sample(1:3000, 2500, replace = FALSE)
+head(id_train, 10)
+# create docvar with ID
+corp_movies$id_numeric <- 1:ndoc(corp_movies)
+
+# tokenize texts
+toks_movies <- tokens(corp_movies, remove_punct = TRUE, remove_number = TRUE) %>% 
+               tokens_remove(pattern = stopwords("en")) %>% 
+               tokens_wordstem()
+dfmt_movie <- dfm(toks_movies)
+
+# get training set
+dfmat_training <- dfm_subset(dfmt_movie, id_numeric %in% id_train)
+
+# get test set (documents not in id_train)
+dfmat_test <- dfm_subset(dfmt_movie, !id_numeric %in% id_train)
+
+# Next we train the naive Bayes classifier using textmodel_nb().
+
+tmod_nb <- textmodel_nb(dfmat_training, dfmat_training$sentiment)
+summary(tmod_nb)
+```
+
+```{r}
+# Naive Bayes can only take features into consideration that occur both in the training set and the test set, but we can make the features identical using dfm_match()
+
+dfmat_matched <- dfm_match(dfmat_test, features = featnames(dfmat_training))
+
+# Let’s inspect how well the classification worked.
+
+actual_class <- dfmat_matched$sentiment
+predicted_class <- predict(tmod_nb, newdata = dfmat_matched)
+tab_class <- table(actual_class, predicted_class)
+tab_class
+```
+
+```{r}
+# We can use the function confusionMatrix() from the caret package to assess the performance of the classification.
+
+confusionMatrix(tab_class, mode = "everything")
+```
+
+
