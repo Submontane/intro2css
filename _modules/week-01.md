@@ -4,11 +4,11 @@ title: Intro to CSS
 
 July 15
 : [CSS Basics](#)
-  : [1.1](#)
 : **Section**{: .label .label-gray }[An Overview of CSS](#)
 : **Section**{: .label .label-gray }[Conceptualizing CSS](#)
 : **Section**{: .label .label-purple }[Machine Learning Basics](#)
 : **Lab**{: .label .label-purple } [R or Python basics](#)
+  : [L1.1](https://yongjunzhang.com/intro2css/assets/files/Lab1-Tutorial.html),[L1.2](https://yongjunzhang.com/intro2css/assets/files/Lab2.html),[L1.3](https://yongjunzhang.com/intro2css/assets/files/Lab3.html)
 : **Code Challenge 1 due**{: .label .label-red }
 
 July 16
