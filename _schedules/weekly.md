@@ -50,7 +50,7 @@ schedule:
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Guest Speaker
+      - name: Lecture
         start: 10:45 AM
         end: 11:30 AM
         location: Zoom
@@ -72,7 +72,7 @@ schedule:
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Guest Speaker: DR. YD LU
+      - name: Guest Speaker-DR. YD LU
         start: 10:45 AM
         end: 11:30 AM
         location: Zoom
@@ -94,7 +94,7 @@ schedule:
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Guest Speaker: DR. SS XU
+      - name: Guest Speaker-DR. SS XU
         start: 10:45 AM
         end: 11:30 AM
         location: Zoom
@@ -116,7 +116,7 @@ schedule:
         start: 9:00 AM
         end: 10:30 AM
         location: Zoom
-      - name: Guest Speaker
+      - name: Guest Speaker-TBD
         start: 10:45 AM
         end: 11:30 AM
         location: Zoom
