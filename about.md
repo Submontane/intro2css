@@ -20,6 +20,8 @@ description: >-
 
 This is the course website for intro2css. The aim of this course is to show you the roadmap of conducting computational social science work. We will briefly cover the state-of-the-art techniques but we will focus more on the application side in social sciences. 
 
+You can check [our syllabus here](https://yongjunzhang.com/intro2css/assets/files/syllabus.pdf).
+
 ## Resources
 
 #### Required textbook. 
