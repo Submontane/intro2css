@@ -6,7 +6,7 @@ website: https://yongjunzhang.com
 photo: yz.jpg
 ---
 
-Zhang's Office Hour: Morning 8:30-10AM Beijing Time July 16-20. 
+Zhang's Office Hour: Morning 8:00-9:00PM Beijing Time July 16-20. (8-9AM EST)
 
 Join Zoom Meeting
 
