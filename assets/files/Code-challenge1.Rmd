@@ -18,17 +18,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 require(pacman)
-p_load(tidyverse,glue)
+p_load(tidyverse, glue)
 
-files <- list.files(path = "./names/",pattern = ".txt",full.names = TRUE)
+files <- list.files(path = "./names/", pattern = ".txt", full.names = TRUE)
 files
 
 # let us say we want to define a read_us_baby function
-readSsaBabyNames <- function(file,...){
+readSsaBabyNames <- function(file, ...) {
   require(tidyverse)
-  data <- read_csv(file,col_names = FALSE,show_col_types = FALSE) %>% 
-    mutate(year=str_replace_all(file,"[^0-9]",""))
-  colnames(data) <- c("names","sex","count","year")
+  data <- read_csv(file, col_names = FALSE, show_col_types = FALSE) %>%
+    mutate(year = str_replace_all(file, "[^0-9]", ""))
+  colnames(data) <- c("names", "sex", "count", "year")
   return(data)
 }
 
@@ -36,20 +36,21 @@ dat_year <- map_dfr(files, readSsaBabyNames)
 
 # we only use names after 1970 and used by at least 10
 dat_all <- dat_year %>%
-  filter(year>1970) %>% 
-  group_by(names,sex) %>% 
-  summarise(count=sum(count)) %>% 
-  # we only keep names used by at least 10 
-  filter(count>10) %>% 
-  pivot_wider(names_from = "sex",values_from="count") %>% 
-  replace_na(list(F=0,M=0)) %>% 
-  mutate(female=(F/(F+M)>.5)*1) %>% 
-  mutate(flt1= str_extract(names,"^.")%>% tolower,
-         flt2= str_extract(names,"^.{2}") %>% tolower,
-         llt1= str_extract(names,".$")%>% tolower,
-         llt2= str_extract(names,".{2}$")%>% tolower
-         )
-save(dat_year,dat_all,file="./ssa_baby_names.RData")
+  filter(year > 1970) %>%
+  group_by(names, sex) %>%
+  summarise(count = sum(count)) %>%
+  # we only keep names used by at least 10
+  filter(count > 10) %>%
+  pivot_wider(names_from = "sex", values_from = "count") %>%
+  replace_na(list(F = 0, M = 0)) %>%
+  mutate(female = (F / (F + M) > .5) * 1) %>%
+  mutate(
+    flt1 = str_extract(names, "^.") %>% tolower(),
+    flt2 = str_extract(names, "^.{2}") %>% tolower(),
+    llt1 = str_extract(names, ".$") %>% tolower(),
+    llt2 = str_extract(names, ".{2}$") %>% tolower()
+  )
+save(dat_year, dat_all, file = "./ssa_baby_names.RData")
 ```
 
 ### Split our data into train and test data

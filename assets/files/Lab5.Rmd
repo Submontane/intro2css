@@ -111,13 +111,13 @@ doca_nyt_corpus <- corpus(doca_nyt)  # build a new corpus from the texts
 > To extract texts from a corpus, we use an extractor, called texts().
 
 ```{r}
-texts(doca_nyt_corpus)[2]
+as.character(doca_nyt_corpus)[2]
 ```
 
 > Tokenize texts: To simply tokenize a text, quanteda provides a powerful command called tokens(). This produces an intermediate object, consisting of a list of tokens in the form of character vectors, where each element of the list corresponds to an input document.
 
 ```{r}
-tokens(texts(doca_nyt_corpus)[2],remove_numbers = TRUE, remove_punct = TRUE, remove_separators = TRUE)
+tokens(as.character(doca_nyt_corpus)[2], remove_numbers = TRUE, remove_punct = TRUE, remove_separators = TRUE)
 ```
 
 ##### Constructing a document-feature matrix
@@ -126,7 +126,10 @@ Tokenizing texts is an intermediate option, and most users will want to skip str
 
 ```{r}
 # make a dfm
-my_dfm <- dfm(doca_nyt_corpus, remove = stopwords("english"), stem = TRUE, remove_punct = TRUE)
+my_tokens <- tokens(doca_nyt_corpus, remove_numbers = TRUE, remove_punct = TRUE, remove_separators = TRUE)
+my_dfm <- dfm(my_tokens) %>% 
+  dfm_remove(stopwords("english")) %>% 
+  dfm_wordstem()
 my_dfm[, 1:5]
 ```
 > Viewing the document-feature matrix: The dfm can be inspected in the Enviroment pane in RStudio, or by calling R’s View function. Calling plot on a dfm will display a wordcloud.
@@ -136,6 +139,7 @@ topfeatures(my_dfm, 20)  # 20 top words
 ```
 
 ```{r}
+library(quanteda.textplots)
 set.seed(100)
 textplot_wordcloud(my_dfm, min_count = 6, random_order = FALSE,
                    rotation = .25, 
@@ -172,6 +176,7 @@ To simplify the demo process, we will use 10 short strings to represent 10 docum
 Usually before running topic model, we need to normalize our texts as shown in our lecture (like tidy texts, removing stop words, white-spaces, etc.). We often use tidytext, tm, or [quanteda](https://tutorials.quanteda.io/) packages in R to preprocess the texts, but now let us stick to basic stuff. I strongly suggest you to take some time to read the quanteda tutorial.
 
 ```{r}
+library(tidyverse)
 raw_docs <- c(
 	"Chinese cuisine is an important part of Chinese culture, which includes cuisine originating from the diverse regions of China, as well as from Overseas Chinese who have settled in other parts of the world.",
 	"The preference for seasoning and cooking techniques of Chinese provinces depend on differences in historical background and ethnic groups.",
@@ -186,35 +191,35 @@ raw_docs <- c(
 )
 
 # lower cases and remove punctuation or double spaces
-raw_docs <- stringr::str_replace_all(tolower(raw_docs),"[:punct:]","")
+raw_docs <- str_remove_all(tolower(raw_docs),"[:punct:]")
 
 # remove stop words
 stopwords_regex = paste(stopwords::stopwords('en'), collapse = '\\b|\\b')
 stopwords_regex = paste0('\\b', stopwords_regex, '\\b')
-raw_docs <- stringr::str_replace_all(raw_docs,stopwords_regex, '')
+raw_docs <- str_replace_all(raw_docs, stopwords_regex, '')
 
-# remove the most frequent words, chinese,american, football
-raw_docs <- stringr::str_replace_all(raw_docs,"chinese|american|football", '')
+# remove the most frequent words, chinese, american, football
+raw_docs <- str_remove_all(raw_docs, "chinese|american|football")
 raw_docs[[1]]
 
 # let us squish our text, removing extra spaces
-raw_docs <- stringr::str_squish(raw_docs)
+raw_docs <- str_squish(raw_docs)
 
 # segmenting each work, similar to tokenization.
-docs <- strsplit(raw_docs, split = " ")
+docs <- str_split(raw_docs, " ")
 docs[[1]]
 
 # get a vocabulary of unique words in our corpus
-vocab <- unique( unlist(docs) )
+vocab <- unique(unlist(docs))
 
 # represent strings using numerical numbers
 # use the base match function match(x,table)
 # If x[i] is found to equal table[j] then the value returned in the i-th position of the return value is j, for the smallest possible j. 
-for( i in 1:length(docs) ) {
-	docs[[i]] <- match( docs[[i]], vocab )
-}
+# for( i in 1:length(docs) ) {
+# 	docs[[i]] <- match( docs[[i]], vocab )
+# }
+docs <- map(1:length(docs), ~ match(docs[[.]], vocab))
 docs
-
 ```
 
 In LDA, we have to specify the number of clusters (i.e., topics) first. Usually it was denoted by K. In this case, let us do 2.
@@ -233,24 +238,24 @@ knitr::include_graphics('figure1.png')
 ```{r}
 
 # cluster number 
-K <- 2 
+K <- 2
 
 # initialize count matrices 
 # @wt : word-topic matrix 
-wt <- matrix( 0, nrow = K, ncol = length(vocab) )
+wt <- matrix(0, nrow = K, ncol = length(vocab))
 colnames(wt) <- vocab
 
 # @ta : topic assignment list
-ta <- lapply( docs, function(x) rep( 0, length(x) ) ) 
-names(ta) <- paste0( "doc", 1:length(docs) )
+ta <- map(docs, ~ rep(0, length(.))) 
+names(ta) <- paste0("doc", 1:length(docs))
 
 # @dt : counts correspond to the number of words assigned to each topic for each document
-dt <- matrix( 0, length(docs), K )
+dt <- matrix(0, length(docs), K)
 
 set.seed(2022)
-for( d in 1:length(docs) ) { 
+for (d in 1:length(docs)) { 
 	# randomly assign topic to word w
-	for( w in 1:length( docs[[d]] ) ) {
+	for(w in 1:length(docs[[d]])) {
 		ta[[d]][w] <- sample(1:K, 1) 
 
 		# extract the topic index, word id and update the corresponding cell in the word-topic count matrix  
@@ -280,10 +285,9 @@ print(dt)
 
 > For each document d, go through each word w. Reassign a new topic to w from topic t with "the probability of word w given topic t" $\times$ "probability of topic t given document d", denoted by the following mathematical notations:
 
-$$ P( z_i = j \text{ }| \text{ } z_{-i}, w_i, d_i ) 
+$$P( z_i = j \text{ }| \text{ } z_{-i}, w_i, d_i ) 
     \propto \frac{ C^{WT}_{w_ij} + \eta }{ \sum^W_{ w = 1 }C^{WT}_{wj} + W\eta } \times
-      \frac{ C^{DT}_{d_ij} + \alpha }{ \sum^T_{ t = 1 }C^{DT}_{d_it} + T\alpha }
-$$
+      \frac{ C^{DT}_{d_ij} + \alpha }{ \sum^T_{ t = 1 }C^{DT}_{d_it} + T\alpha }$$
 
 This formula is confusing! Let us talk bit by bit.
 
@@ -460,7 +464,7 @@ We need to merge with doca data to retrieve some meta data like publishing year 
 
 ```{r}
 library(haven)
-doca <- read_dta("./final_data_v10.dta",encoding = "latin1")
+doca <- read_dta("./final_data_v10.dta", encoding = "latin1")
 # because doca is event-level data, we want article level data
 doca_article <- doca %>% 
   transmute(title=tolower(title),

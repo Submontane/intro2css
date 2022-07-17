@@ -383,6 +383,7 @@ check it here <https://www.tidyverse.org/>. The tidyverse package installs a num
 
 ```{r}
 # read tsv file using read_csv
+library(readr)
 data <- read_tsv(url("https://yongjunzhang.com/files/blm-data.tsv"))
 ```
 

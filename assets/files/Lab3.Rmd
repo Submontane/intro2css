@@ -74,17 +74,17 @@ Here our goal is to use data from SSA to train a gender classifier using name fe
 > Of course, you can take a more rigorous way to define the gender of names.
 
 ```{r}
-files <- list.files(path = "./names/",pattern = ".txt",full.names = TRUE)
+files <- list.files(path = "./names/", pattern = ".txt", full.names = TRUE)
 files
 
 # let us read the first file
 library(tidyverse)
 # let us say we want to define a read_us_baby function
-readSsaBabyNames <- function(file,...){
+readSsaBabyNames <- function(file, ...) {
   require(tidyverse)
-  data <- read_csv(file,col_names = FALSE,show_col_types = FALSE) %>% 
-    mutate(year=str_replace_all(file,"[^0-9]",""))
-  colnames(data) <- c("names","sex","count","year")
+  data <- read_csv(file, col_names = FALSE, show_col_types = FALSE) %>%
+    mutate(year = str_replace_all(file, "[^0-9]", ""))
+  colnames(data) <- c("names", "sex", "count", "year")
   return(data)
 }
 
@@ -92,26 +92,26 @@ dat_year <- map_dfr(files, readSsaBabyNames)
 
 # we only use names after 1970 and used by at least 10
 dat_all <- dat_year %>%
-  filter(year>1970) %>% 
-  group_by(names,sex) %>% 
-  summarise(count=sum(count)) %>% 
-  # we only keep names used by at least 10 
-  filter(count>10) %>% 
+  filter(year > 1970) %>%
+  group_by(names, sex) %>%
+  summarise(count = sum(count)) %>%
+  # we only keep names used by at least 10
+  filter(count > 10) %>%
   # reshape the long format to wide format
-  pivot_wider(names_from = "sex",values_from="count") %>% 
+  pivot_wider(names_from = "sex", values_from = "count") %>%
   # replace NA with zeros
-  replace_na(list(F=0,M=0)) %>% 
+  replace_na(list(F = 0, M = 0)) %>%
   # create our target outcome female
-  mutate(female=(F/(F+M)>.5)*1) %>% 
+  mutate(female = (F / (F + M) > .5) * 1) %>%
   # create a series of predictors
-  mutate(flt1= str_extract(names,"^.")%>% tolower,
-         flt2= str_extract(names,"^.{2}") %>% tolower,
-         llt1= str_extract(names,".$")%>% tolower,
-         llt2= str_extract(names,".{2}$")%>% tolower
-         )
-  
-  
-save(dat_year,dat_all,file="./ssa_baby_names.RData")
+  mutate(
+    flt1 = str_extract(names, "^.") %>% tolower(),
+    flt2 = str_extract(names, "^.{2}") %>% tolower(),
+    llt1 = str_extract(names, ".$") %>% tolower(),
+    llt2 = str_extract(names, ".{2}$") %>% tolower()
+  )
+
+save(dat_year, dat_all, file = "./ssa_baby_names.RData")
 ```
 
 ### Split our data into train and test data
@@ -155,7 +155,7 @@ library(caret)
 fllt_d=predict(dummyVars(~llt1+llt2+flt1+flt2,data=dat_all),newdata=dat_all)%>%as.data.frame()
 # This will create a over 900 vars, and some of them are near zero variance, so we need to get rid of it.
 #identify near zero variance variables
-nzv_test <- nearZeroVar(fllt_d,freqCut = 95/5, uniqueCut = 10, saveMetrics= TRUE,allowParallel = TRUE)
+# nzv_test <- nearZeroVar(fllt_d,freqCut = 95/5, uniqueCut = 10, saveMetrics= TRUE,allowParallel = TRUE)
 nzv <- nearZeroVar(fllt_d,freqCut = 95/5, uniqueCut = 10,allowParallel = TRUE)
 fllt_nnzv<- fllt_d[, -nzv]
 #create the full datasets with dummies
@@ -164,7 +164,7 @@ df=dat_all %>%
   select(names,female) %>% 
   bind_cols(fllt_nnzv) %>% 
   filter(!is.na(female)) %>% 
-  mutate(female=ifelse(female==1,"Y","N") %>% as.factor)
+  mutate(female = female==1)
 ```
 
 Let us finally split our data into train and test
@@ -237,7 +237,7 @@ save(xgb_base,file="./xgb_base.RData")
 
 ```
 
-### Let us check model performance, get the comfusion matrix firrst
+### Let us check model performance, get the comfusion matrix first
 
 ```{r}
 #load("./xgb_base.RData")
@@ -252,7 +252,7 @@ confusionMatrix(xgb_base)
 
 
 ```{r}
-xgbImp <- varImp(xgb_base,scale = TRUE)
+xgbImp <- varImp(xgb_base, scale = TRUE)
 plot(xgbImp, top = 5)
 ```
 
@@ -262,7 +262,7 @@ plot(xgbImp, top = 5)
 
 # predict name_remove
 test_df <- test %>% dplyr::select(-c(names,female))
-test_pred <- predict(xgb_base,newdata=test_df) %>% as.data.frame()
+test_pred <- predict(xgb_base, newdata = test_df) %>% tibble()
 colnames(test_pred) <- "xgb_female"
 
 data <- test %>% select(names,female) %>% bind_cols(test_pred)

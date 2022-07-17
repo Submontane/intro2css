@@ -118,7 +118,8 @@ packages<-c("tidyverse",
             "keras",
             "torch",
             "torchvision")
-p_load(packages,character.only = TRUE)
+# p_load(packages,character.only = TRUE)
+1+1
 ```
 
 You can also click here to install tensorflow and keras <https://tensorflow.rstudio.com/installation/>. We will use it for image classification. Of course, you can install python version for keras and tensorflow...

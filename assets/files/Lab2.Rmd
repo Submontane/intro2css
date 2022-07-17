@@ -66,7 +66,7 @@ Packages are developed by the R user community to achieve different goals. For i
 # you can use install.packages("package_name") to install necessary packages
 # in this tutorial, we need the following packages:
 if (!requireNamespace("pacman")) install.packages('pacman')
-library(pacman)
+library(pacman) # cmd + Enter
 packages<-c("tidyverse","haven","xlsx")
 p_load(packages,character.only = TRUE)
 ```
@@ -219,7 +219,8 @@ g
 # Note that a = 5
 a == 5
 a <= 100
-a !=100
+a != 100
+a > 100
 # as you see here, it returns TRUE OR FALSE
 ```
 
@@ -257,14 +258,14 @@ let us see some examples:
 
 ```{r}
 # scalars
-a <-  2
+a <- "a"
 class(a)
 # vectors
 b <- c("a","b","c")
 b
 class(b)
 # matrix
-c <- matrix(c(2,4,3,1,5,7),nrow=2, ncol=3,byrow=TRUE)
+c <- matrix(c(2,4,3,1,5,7), nrow = 2, ncol = 3, byrow = TRUE)
 c
 class(c)
 # data frame
@@ -275,7 +276,7 @@ df <- data.frame(n,s,b)
 df
 class(df)
 # lists
-list_example <- list("Red", "Green", c(1,2,3), TRUE, 520, 10000)
+list_example <- list("Red", "Green", c(1,2,3), list(1, "a"), TRUE, 520, 10000)
 list_example
 class(list_example)
 ```
@@ -293,6 +294,7 @@ print_text <- function(x){
 
 x <- "Hello Word, R."
 print_text(x)
+print(x)
 
 ```
 
@@ -330,7 +332,7 @@ CalculateSampleCovariance <- function(x, y, verbose = TRUE) {
 getAnywhere(CalculateSampleCovariance)
 
 (x <- seq(1,10,1))
-(y <- seq(21,40,2))
+(y <- seq(21,39,2))
 CalculateSampleCovariance(x,y,verbose = TRUE)
 ```
 
@@ -442,6 +444,7 @@ Here is what you are actually doing.
 ![US Baby Names Example](./babynames.png)
 
 ```{r}
+setwd("~/Downloads")
 files <- list.files(path = "./names/",pattern = ".txt",full.names = TRUE)
 files
 
@@ -827,7 +830,7 @@ We use * or ? to do greedy (longest search) or lazy match (shortest search).
 # A sample text string where regular expression is searched. 
 string = "STONY BROOK UNIVERSITY ZIPCODE IS 11794, MY ID IS 12398774, YOU ID IS 8966AGVGG"
 # A sample regular expression to find digits. 
-pattern = '\\d+'			
+pattern = '\\d+'
 match = str_extract_all(string,pattern)
 print(match) 
 ```
